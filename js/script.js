@@ -14,6 +14,7 @@ var seasons = [
 	{
 		id: "mn1",
 		label: "Midnight S1",
+		shot: true,
 		raids: [
 			{
 				raid: "The Voidspire",
@@ -125,6 +126,8 @@ function renderRaids() {
 	var h = document.getElementById("midnight-raids"),
 		f = [];
 	h.innerHTML = "";
+	document.getElementById("killshot").hidden = !activeSeason.shot;
+	document.getElementById("recruitNote").hidden = !!activeSeason.shot;
 	activeSeason.raids.forEach(function (rd) {
 		var s = summariseFor(rd, rioData),
 			c = document.createElement("div");

@@ -89,6 +89,10 @@
   .killshot img:hover{ box-shadow:0 0 40px rgba(167,139,250,0.4); filter:brightness(1.06); }
   .killshot figcaption{ margin-top:11px; text-align:center; font-size:.6rem; letter-spacing:.22em; text-transform:uppercase; color:var(--violet-soft); }
   .killshot figcaption .dim{ color:var(--muted); }
+  .recruit-note{ max-width:600px; margin:32px auto 0; text-align:center; padding:34px 28px; background:var(--panel); border:1px solid var(--line-soft); border-radius:10px; }
+  .recruit-note p{ font-family:"Cormorant Garamond",serif; font-style:italic; font-size:1.3rem; color:var(--ink); margin:0 0 20px; }
+  .recruit-note strong{ color:var(--violet-soft); font-style:normal; }
+  .recruit-note[hidden], .killshot[hidden]{ display:none; }
   .tier-detail .t-shot{ width:100%; display:block; margin-top:16px; border-radius:8px; border:1px solid var(--line-soft); cursor:zoom-in; transition:box-shadow .3s ease, filter .3s ease; }
   .tier-detail .t-shot:hover{ box-shadow:0 0 30px rgba(167,139,250,0.3); filter:brightness(1.06); }
   /* lightbox / zoom viewer */
