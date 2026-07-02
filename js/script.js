@@ -155,17 +155,17 @@ function renderRaids() {
 			rd.raid +
 			'</span><div class="raid-meta"><span class="raid-count">' +
 			s.count +
-			"</span>" +
-			(hasBosses
-				? '<button class="raid-toggle" type="button" aria-expanded="false" aria-controls="' +
-				  listId +
-				  '" title="Show boss progress"><span class="chev">&#9662;</span></button>'
-				: "") +
-			"</div></div>" +
+			"</span></div></div>" +
 			'<div class="bar"><div class="bar-fill' +
 			(s.cls === "prog" ? " prog" : "") +
-			'"></div></div><div class="raid-diff">' +
+			'"></div></div><div class="raid-foot"><div class="raid-diff">' +
 			s.diff +
+			"</div>" +
+			(hasBosses
+				? '<button class="raid-toggle" type="button" aria-label="Show boss progress" aria-expanded="false" aria-controls="' +
+					listId +
+					'" title="Show boss progress">+</button>'
+				: "") +
 			"</div>" +
 			(bossList ? '<ul class="boss-list" id="' + listId + '" hidden>' + bossList + "</ul>" : "");
 		h.appendChild(c);
@@ -175,6 +175,9 @@ function renderRaids() {
 			t.addEventListener("click", function () {
 				var open = t.getAttribute("aria-expanded") === "true";
 				t.setAttribute("aria-expanded", open ? "false" : "true");
+				t.textContent = open ? "+" : "-";
+				t.setAttribute("title", open ? "Show boss progress" : "Hide boss progress");
+				t.setAttribute("aria-label", open ? "Show boss progress" : "Hide boss progress");
 				bl.hidden = open;
 			});
 		}
