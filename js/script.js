@@ -124,26 +124,60 @@ function defaultSeason() {
 }
 function renderRaids() {
 	var h = document.getElementById("midnight-raids"),
-		f = [];
+		f = [],
+		cardSeq = 0;
 	h.innerHTML = "";
+	h.classList.toggle("single-raid", activeSeason.raids.length === 1);
 	document.getElementById("killshot").hidden = !activeSeason.shot;
 	document.getElementById("recruitNote").hidden = !!activeSeason.shot;
 	activeSeason.raids.forEach(function (rd) {
 		var s = summariseFor(rd, rioData),
-			c = document.createElement("div");
+			c = document.createElement("div"),
+			listId = "boss-list-" + activeSeason.id + "-" + cardSeq++,
+			hasBosses = (rd.bosses || []).length > 0,
+			bossList = (rd.bosses || [])
+				.map(function (b) {
+					var state = b.cleared === "heroic" ? "Heroic" : b.cleared === "normal" ? "Normal" : "Not started";
+					return (
+						'<li class="boss-item"><span class="boss-name">' +
+						b.name +
+						'</span><span class="boss-state ' +
+						b.cleared +
+						'">' +
+						state +
+						"</span></li>"
+					);
+				})
+				.join("");
 		c.className = "raid-card reveal " + s.cls;
 		c.innerHTML =
 			'<div class="raid-head"><span class="raid-name">' +
 			rd.raid +
-			'</span><span class="raid-count">' +
+			'</span><div class="raid-meta"><span class="raid-count">' +
 			s.count +
-			"</span></div>" +
+			"</span>" +
+			(hasBosses
+				? '<button class="raid-toggle" type="button" aria-expanded="false" aria-controls="' +
+				  listId +
+				  '" title="Show boss progress"><span class="chev">&#9662;</span></button>'
+				: "") +
+			"</div></div>" +
 			'<div class="bar"><div class="bar-fill' +
 			(s.cls === "prog" ? " prog" : "") +
 			'"></div></div><div class="raid-diff">' +
 			s.diff +
-			"</div>";
+			"</div>" +
+			(bossList ? '<ul class="boss-list" id="' + listId + '" hidden>' + bossList + "</ul>" : "");
 		h.appendChild(c);
+		if (hasBosses) {
+			var t = c.querySelector(".raid-toggle"),
+				bl = c.querySelector(".boss-list");
+			t.addEventListener("click", function () {
+				var open = t.getAttribute("aria-expanded") === "true";
+				t.setAttribute("aria-expanded", open ? "false" : "true");
+				bl.hidden = open;
+			});
+		}
 		f.push({ el: c.querySelector(".bar-fill"), pct: s.pct });
 	});
 	setTimeout(function () {
