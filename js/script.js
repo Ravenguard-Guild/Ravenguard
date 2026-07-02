@@ -292,6 +292,55 @@ function fetchRio() {
 	window.addEventListener("resize", adjustPast);
 })();
 
+/* ---- apply form -> structured email draft for recruitment ---- */
+(function () {
+	var form = document.getElementById("applyForm");
+	if (!form) return;
+	var MAX_MSG_CHARS = 1200;
+	var messageField = document.getElementById("applyMessage");
+	var nameField = document.getElementById("applyName");
+	var contactField = document.getElementById("applyContact");
+	var subjectField = document.getElementById("applySubject");
+	var counter = document.getElementById("applyCounter");
+
+	if (messageField) {
+		messageField.setAttribute("maxlength", String(MAX_MSG_CHARS));
+	}
+
+	function updateCounter() {
+		if (!messageField || !counter) return;
+		var len = messageField.value.length;
+		counter.textContent = len + " / " + MAX_MSG_CHARS;
+	}
+
+	if (messageField) {
+		messageField.addEventListener("input", updateCounter);
+	}
+	updateCounter();
+
+	form.addEventListener("submit", function (e) {
+		var name = (nameField && nameField.value ? nameField.value : "").trim();
+		var contact = (contactField && contactField.value ? contactField.value : "").trim();
+		var message = (messageField && messageField.value ? messageField.value : "").trim();
+
+		if (message.length > MAX_MSG_CHARS) {
+			message = message.slice(0, MAX_MSG_CHARS);
+			if (messageField) messageField.value = message;
+			updateCounter();
+		}
+
+		if (!name || !contact || !message) {
+			e.preventDefault();
+			if (typeof form.reportValidity === "function") form.reportValidity();
+			return;
+		}
+
+		if (subjectField) {
+			subjectField.value = "[Ravenguard Apply] " + name;
+		}
+	});
+})();
+
 /* ---- click-to-zoom lightbox for the kill shots ---- */
 (function () {
 	var lb = document.createElement("div");

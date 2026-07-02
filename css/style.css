@@ -134,6 +134,9 @@
 
   .join{ text-align:center; }
   .join .links{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-top:6px; }
+  .btn-raider{ display:inline-flex; align-items:center; gap:10px; }
+  .rio-ic{ width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; }
+  .rio-ic svg{ width:100%; height:100%; fill:currentColor; }
   .btn{ font-size:.76rem; letter-spacing:.18em; text-transform:uppercase; padding:15px 30px; border-radius:3px; text-decoration:none; transition:all .3s ease; display:inline-block; }
   .btn-gold{ color:#0b0820; background:linear-gradient(180deg,var(--violet-soft),var(--violet)); border:1px solid var(--violet); box-shadow:0 0 28px rgba(167,139,250,0.4); }
   .btn-gold:hover{ transform:translateY(-3px); box-shadow:0 0 40px rgba(167,139,250,0.6); }
@@ -141,11 +144,28 @@
   .btn-ghost:hover{ border-color:var(--cyan); color:var(--cyan); transform:translateY(-3px); }
   .btn-ghost.copied{ border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 22px rgba(94,234,212,0.35); }
 
+  .apply-form{ max-width:720px; margin:30px auto 0; text-align:left; background:var(--panel); border:1px solid var(--line-soft); border-radius:10px; padding:24px; }
+  .apply-form h3{ font-family:"Cormorant Garamond",serif; font-size:1.6rem; letter-spacing:.02em; margin:0 0 6px; }
+  .apply-note{ color:var(--ink-dim); margin:0 0 16px; }
+  .apply-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .apply-form label{ display:block; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-dim); }
+  .apply-form input,
+  .apply-form select,
+  .apply-form textarea{ width:100%; margin-top:7px; background:#0d0b1d; border:1px solid var(--line-soft); border-radius:6px; color:var(--ink); font:inherit; padding:11px 12px; }
+  .apply-form textarea{ resize:vertical; min-height:120px; max-height:260px; }
+  .apply-form input:focus,
+  .apply-form select:focus,
+  .apply-form textarea:focus{ outline:none; border-color:var(--violet); box-shadow:0 0 0 2px rgba(167,139,250,0.16); }
+  .apply-actions{ margin-top:14px; display:flex; justify-content:flex-start; }
+  .apply-counter{ margin-top:8px; text-align:right; color:var(--muted); font-size:.78rem; letter-spacing:.08em; }
+  .apply-meta{ margin-top:10px; color:var(--muted); font-size:.82rem; }
+  .apply-meta strong{ color:var(--violet-soft); }
+
   footer{ text-align:center; padding:48px 30px 60px; border-top:1px solid var(--line-soft); margin-top:30px; color:var(--muted); font-size:.84rem; position:relative; z-index:2; }
   footer .mark{ font-family:"Cormorant Garamond",serif; letter-spacing:.06em; color:var(--ink-dim); font-size:1.1rem; }
 
   .reveal{ opacity:0; transform:translateY(18px); animation:rise .9s ease forwards; }
   @keyframes rise{ to{ opacity:1; transform:translateY(0); } }
   .d1{ animation-delay:.05s; } .d2{ animation-delay:.18s; } .d3{ animation-delay:.32s; } .d4{ animation-delay:.46s; }
-  @media (max-width:680px){ .games,.raids{ grid-template-columns:1fr; } header.hero{ padding:78px 28px 50px; } }
+  @media (max-width:680px){ .games,.raids,.apply-grid{ grid-template-columns:1fr; } header.hero{ padding:78px 28px 50px; } }
   @media (prefers-reduced-motion:reduce){ .reveal{ animation:none; opacity:1; transform:none; } .bar-fill{ transition:none; } body::before{ animation:none; } html{ scroll-behavior:auto; } }

@@ -56,3 +56,28 @@ which specific boss died — so the per-boss names always come from the manual
 In `js/script.js`, give the tier an `img:` path, e.g.
 `{ id:"sl1", ..., img:"images/screenshots/your-shot.jpg" }`.
 Drop the image in `images/screenshots/` and it becomes zoomable too.
+
+## Recruitment Apply Form + Future Bot Integration
+The Apply form under the Join section drafts an email to:
+- `ravenguard.g@gmail.com`
+
+It uses a stable subject/body format so you can automate later:
+- Subject: `[Ravenguard Apply] Topic: <topic> | <character>`
+- Body contains labeled lines:
+    - `Label: Ravenguard Apply`
+    - `Topic: ...`
+    - `Character/Handle: ...`
+    - `Contact: ...`
+    - `Message:`
+
+### Gmail labeling (folder)
+Create a Gmail filter for subject containing `[Ravenguard Apply]` and apply label,
+for example `Recruitment/Applications`.
+
+### Discord ping (later)
+For a future bot repo, easiest flow is:
+1. Watch labeled Gmail messages (`Recruitment/Applications`) via Gmail API push (`watch`) or polling.
+2. Parse the labeled fields from subject/body.
+3. Post to a Discord webhook or bot channel message.
+
+This keeps the website static while automation lives in your bot repository.

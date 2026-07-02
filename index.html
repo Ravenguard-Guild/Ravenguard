@@ -71,9 +71,39 @@
       <p>Looking for a relaxed home for raiding and whatever we play next? Come hang out.</p>
     </div>
     <div class="links reveal">
-      <a class="btn btn-gold" href="https://raider.io/guilds/eu/tarren-mill/Ravenguard" target="_blank" rel="noopener">View on Raider.IO</a>
+      <a class="btn btn-gold btn-raider" href="https://raider.io/guilds/eu/tarren-mill/Ravenguard" target="_blank" rel="noopener" aria-label="Open Raider.IO guild page">
+        <span class="rio-ic" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img" focusable="false"><path d="M5 17h3v2H5v-2zm5-5h3v7h-3v-7zm5-4h3v11h-3V8zM4 5h2v13H4V5zm14-1h2v14h-2V4z"/></svg>
+        </span>
+        Raider.IO
+      </a>
       <a class="btn btn-ghost" href="https://discord.com/users/234653523269124096" target="_blank" rel="noopener">Message on Discord</a>
     </div>
+    <form class="apply-form reveal" id="applyForm" action="https://formsubmit.co/ravenguard.g@gmail.com" method="POST" novalidate>
+      <h3>Apply</h3>
+      <p class="apply-note">This sends directly to our recruitment inbox.</p>
+      <input type="hidden" name="_subject" id="applySubject" value="[Ravenguard Apply] New Application" />
+      <input type="hidden" name="_template" value="table" />
+      <input type="hidden" name="_captcha" value="false" />
+      <div class="apply-grid">
+        <label>
+          Character / Handle
+          <input id="applyName" name="character_handle" type="text" placeholder="Character-Server or Discord handle" required />
+        </label>
+        <label>
+          Contact
+          <input id="applyContact" name="contact" type="text" placeholder="Discord / BattleTag" required />
+        </label>
+      </div>
+      <label>
+        Message
+        <textarea id="applyMessage" name="message" rows="5" maxlength="1200" placeholder="Tell us what you play, your vibe, and availability." required></textarea>
+      </label>
+      <p class="apply-counter" id="applyCounter">0 / 1200</p>
+      <div class="apply-actions">
+        <button class="btn btn-gold" type="submit">Send Application</button>
+      </div>
+    </form>
   </div></section>
 
   <footer><div class="mark">Ravenguard</div><p style="margin-top:7px;">Tarren Mill (EU) &middot; World of Warcraft &amp; beyond</p></footer>
