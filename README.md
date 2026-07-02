@@ -22,10 +22,13 @@ A small one-page site for the Ravenguard guild (Tarren Mill, EU).
 3. Live at https://<user>.github.io/<repo>/ within a minute or two.
 
 ## Updating raid progress
-Open `js/script.js` and edit the `midnight` array near the top.
-Set each boss's `cleared` to `"heroic"`, `"normal"`, or `"none"`.
-The X/Y count, the bar fill, and the colour update automatically.
-(e.g. when Sporefall's Rotmire dies, change its `cleared` to `"heroic"`.)
+Raids are grouped by season in the `seasons` array at the top of `js/script.js`;
+the page shows chips to switch between seasons (defaulting to the most recent
+one with progress). To add a new season, append an entry with an `id`, `label`,
+and its `raids`. Within a raid, set each boss's `cleared` to `"heroic"`,
+`"normal"`, or `"none"` — the X/Y count, the bar fill, and the colour update
+automatically. (e.g. when Sporefall's Rotmire dies, change its `cleared` to
+`"heroic"`.)
 
 ### Automatic tracking (Raider.IO)
 The site also pulls live progress from the Raider.IO API on page load
