@@ -1,11 +1,31 @@
-var midnight = [
+/* ---- Raider.IO auto-tracking config ----
+   region/realm/name identify the guild for the RIO API.
+   Each raid below may carry a `rioKey` = Raider.IO's raid slug. When RIO has
+   live data for that slug, it auto-fills the count / bar / difficulty; otherwise
+   the manual `bosses` list is used as a fallback.
+
+   Note: RIO aggregates the whole first Midnight tier (Voidspire + Dreamrift +
+   March on Quel'Danas = 9 bosses) under a single key `tier-mn-1`, so those three
+   raids can't be tracked individually — they stay manual. Keys verified live
+   against the API on 2026-07-01. */
+  var RIO = { region:"eu", realm:"tarren-mill", name:"Ravenguard" };
+
+  var midnight = [
     { raid:"The Voidspire", bosses:[
       {name:"Imperator Averzian",cleared:"heroic"},{name:"Vorasius",cleared:"heroic"},
       {name:"Fallen-King Salhadaar",cleared:"heroic"},{name:"Vaelgor & Ezzorak",cleared:"heroic"},
       {name:"Lightblinded Vanguard",cleared:"heroic"},{name:"Crown of the Cosmos",cleared:"heroic"} ]},
     { raid:"The Dreamrift", bosses:[ {name:"Chimaerus, the Undreamt God",cleared:"heroic"} ]},
     { raid:"March on Quel'Danas", bosses:[ {name:"Belo'ren",cleared:"heroic"},{name:"L'ura, Midnight Falls",cleared:"heroic"} ]},
-    { raid:"Sporefall", bosses:[ {name:"Rotmire",cleared:"none"} ]}
+    { raid:"Sporefall", rioKey:"sporefall", bosses:[ {name:"Rotmire",cleared:"none"} ]},
+    /* Next season's tier — RIO drives the count/bar automatically; the 8 boss
+       entries below are placeholders for the manual fallback (names not shown on
+       the card, so fill them in whenever the tier details are known). */
+    { raid:"The Venomous Abyss", rioKey:"the-venomous-abyss", bosses:[
+      {name:"Boss 1",cleared:"none"},{name:"Boss 2",cleared:"none"},
+      {name:"Boss 3",cleared:"none"},{name:"Boss 4",cleared:"none"},
+      {name:"Boss 5",cleared:"none"},{name:"Boss 6",cleared:"none"},
+      {name:"Boss 7",cleared:"none"},{name:"Boss 8",cleared:"none"} ]}
   ];
   var pastTiers = [
     { id:"sl1", label:"Shadowlands S1", xpac:"Shadowlands — Season 1", raid:"Castle Nathria" },
@@ -16,8 +36,19 @@ var midnight = [
     if(nH===t) return {cls:"done",diff:"Heroic",count:t+"/"+t,pct:100};
     if(nA>0) return {cls:"prog",diff:"Normal",count:nA+"/"+t,pct:Math.round(nA/t*100)};
     return {cls:"pending",diff:"Not started",count:"0/"+t,pct:0}; }
-  function renderMidnight(){ var h=document.getElementById("midnight-raids"),f=[];
-    midnight.forEach(function(rd){ var s=summarise(rd.bosses),c=document.createElement("div"); c.className="raid-card reveal "+s.cls;
+  /* Build a summary from a Raider.IO raid_progression entry (aggregate counts). */
+  function summariseRio(p){ var t=p.total_bosses||0; if(!t) return null;
+    var m=p.mythic_bosses_killed||0, hi=Math.max(p.heroic_bosses_killed||0,m), any=Math.max(p.normal_bosses_killed||0,hi);
+    var diff = m>0?"Mythic":(hi>0?"Heroic":"Normal");
+    if(m===t) return {cls:"done",diff:"Mythic",count:t+"/"+t,pct:100};
+    if(hi===t) return {cls:"done",diff:"Heroic",count:t+"/"+t,pct:100};
+    if(any>0) return {cls:"prog",diff:diff,count:any+"/"+t,pct:Math.round(any/t*100)};
+    return {cls:"pending",diff:"Not started",count:"0/"+t,pct:0}; }
+  /* Prefer live RIO data for a raid when available; otherwise use the manual list. */
+  function summariseFor(rd,rioMap){ if(rioMap && rd.rioKey && rioMap[rd.rioKey]){ var s=summariseRio(rioMap[rd.rioKey]); if(s) return s; }
+    return summarise(rd.bosses); }
+  function renderMidnight(rioMap){ var h=document.getElementById("midnight-raids"),f=[]; h.innerHTML="";
+    midnight.forEach(function(rd){ var s=summariseFor(rd,rioMap),c=document.createElement("div"); c.className="raid-card reveal "+s.cls;
       c.innerHTML='<div class="raid-head"><span class="raid-name">'+rd.raid+'</span><span class="raid-count">'+s.count+'</span></div>'+
         '<div class="bar"><div class="bar-fill'+(s.cls==="prog"?" prog":"")+'"></div></div><div class="raid-diff">'+s.diff+'</div>';
       h.appendChild(c); f.push({el:c.querySelector(".bar-fill"),pct:s.pct}); });
@@ -31,7 +62,16 @@ var midnight = [
     pastTiers.forEach(function(t){ var c=document.createElement("button"); c.className="chip"; c.dataset.id=t.id; c.textContent=t.label; c.addEventListener("click",function(){show(t);}); chips.appendChild(c); });
     if(pastTiers.length) show(pastTiers[0]);
     return adjust; }
+  /* Fetch live progression from Raider.IO (free, CORS-enabled). Falls back
+     silently to the manual data on any error or missing tier. */
+  function fetchRio(){
+    var url="https://raider.io/api/v1/guilds/profile?region="+RIO.region+"&realm="+RIO.realm+"&name="+encodeURIComponent(RIO.name)+"&fields=raid_progression";
+    return fetch(url).then(function(r){ return r.ok?r.json():null; })
+      .then(function(d){ return d&&d.raid_progression?d.raid_progression:null; })
+      .catch(function(){ return null; }); }
+
   (function(){ renderMidnight(); var adjustPast=renderPast();
+    fetchRio().then(function(rioMap){ if(rioMap) renderMidnight(rioMap); });
     var btn=document.getElementById("pastBtn"),panel=document.getElementById("pastPanel");
     btn.addEventListener("click",function(){ var o=panel.classList.toggle("open"); btn.setAttribute("aria-expanded",o?"true":"false"); panel.style.maxHeight = o ? panel.scrollHeight + "px" : "0"; });
     window.addEventListener("resize", adjustPast); })();
