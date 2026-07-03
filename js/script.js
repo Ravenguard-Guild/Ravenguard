@@ -302,6 +302,8 @@ function fetchRio() {
 	var contactField = document.getElementById("applyContact");
 	var subjectField = document.getElementById("applySubject");
 	var counter = document.getElementById("applyCounter");
+	var status = document.getElementById("applyStatus");
+	var submitBtn = form.querySelector('button[type="submit"]');
 
 	if (messageField) {
 		messageField.setAttribute("maxlength", String(MAX_MSG_CHARS));
@@ -318,7 +320,15 @@ function fetchRio() {
 	}
 	updateCounter();
 
+	function setStatus(text, kind) {
+		if (!status) return;
+		status.textContent = text;
+		status.className = "apply-status " + (kind || "");
+		status.hidden = !text;
+	}
+
 	form.addEventListener("submit", function (e) {
+		e.preventDefault();
 		var name = (nameField && nameField.value ? nameField.value : "").trim();
 		var contact = (contactField && contactField.value ? contactField.value : "").trim();
 		var message = (messageField && messageField.value ? messageField.value : "").trim();
@@ -330,14 +340,37 @@ function fetchRio() {
 		}
 
 		if (!name || !contact || !message) {
-			e.preventDefault();
 			if (typeof form.reportValidity === "function") form.reportValidity();
+			setStatus("Please complete all required fields.", "err");
 			return;
 		}
 
 		if (subjectField) {
 			subjectField.value = "[Ravenguard Apply] " + name;
 		}
+
+		setStatus("Sending application...", "");
+		if (submitBtn) submitBtn.disabled = true;
+
+		var endpoint = form.getAttribute("action");
+		var payload = new FormData(form);
+		fetch(endpoint, {
+			method: "POST",
+			body: payload,
+			headers: { Accept: "application/json" },
+		})
+			.then(function (res) {
+				if (!res.ok) throw new Error("submit_failed");
+				form.reset();
+				updateCounter();
+				setStatus("Application sent. Thank you - we will get back to you soon.", "ok");
+			})
+			.catch(function () {
+				setStatus("Could not send right now. Please try again in a moment.", "err");
+			})
+			.finally(function () {
+				if (submitBtn) submitBtn.disabled = false;
+			});
 	});
 })();
 
